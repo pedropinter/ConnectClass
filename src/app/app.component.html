@@ -1,0 +1,34 @@
+<div class="app-root">
+  <aside class="sidebar">
+    <div class="classroom">
+      <div class="logo">
+        <img src="" alt="Logo">
+        <h2>ConnectClass</h2>
+      </div>
+      <label>Sala de Aula</label>
+      <select>
+        <option>1-AM SENAC</option>
+        <option>1-BM SENAC</option>
+        <option>2-AM SENAC</option>
+        <option>2-BM SENAC</option>
+        <option>3-AM SENAC</option>
+        <option>3-BM SENAC</option>
+
+      </select>
+    </div>
+  </aside>
+
+  <main>
+    <section class="calendar-area">
+      <sx-calendar [calendarApp]="calendarApp" class="ng-calendar-wrapper">
+        <ng-template #timeGridEvent let-arg>
+          <div class="event-template">
+            <div>Time grid event: {{ arg.calendarEvent.title }}</div>
+          </div>
+        </ng-template>
+      </sx-calendar>
+    </section>
+  </main>
+</div>
+
+<router-outlet></router-outlet>
