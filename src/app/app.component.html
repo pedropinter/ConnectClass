@@ -16,9 +16,61 @@
 
       </select>
     </div>
+    <div class="tasks-section">
+  <h4>Tarefas</h4>
+
+  <label class="task-filter">
+    <input type="checkbox" checked (change)="toggleFilter('other')">
+    <span class="task-indicator other"></span>
+    Outras tarefas
+  </label>
+
+  <label class="task-filter">
+    <input type="checkbox" checked (change)="toggleFilter('basic')">
+    <span class="task-indicator basic"></span>
+    Básico
+  </label>
+
+  <label class="task-filter">
+    <input type="checkbox" checked (change)="toggleFilter('relative')">
+    <span class="task-indicator relative"></span>
+    Relativa
+  </label>
+
+  <label class="task-filter">
+    <input type="checkbox" checked (change)="toggleFilter('important')">
+    <span class="task-indicator important"></span>
+    Importante
+  </label>
+</div>
   </aside>
 
   <main>
+    <section class="tasks-viewer">
+  <div class="tasks-header">
+    <button class="tab active">Hoje</button>
+    <button class="tab">Semana</button>
+  </div>
+
+  <div class="tasks-content">
+    <!-- Aqui você pode popular as tarefas dinamicamente depois -->
+    <div class="task-item">
+      <div class="task-info">
+        <strong>Portuguese Exam</strong>
+        <span>7:30 AM – 8:30 AM</span>
+      </div>
+      <span class="priority important"></span>
+    </div>
+
+    <div class="task-item">
+      <div class="task-info">
+        <strong>Group Work</strong>
+        <span>8:30 AM – 9:25 AM</span>
+      </div>
+      <span class="priority relative"></span>
+    </div>
+  </div>
+</section>
     <section class="calendar-area">
       <sx-calendar [calendarApp]="calendarApp" class="ng-calendar-wrapper">
         <ng-template #timeGridEvent let-arg>
