@@ -11,7 +11,7 @@
 }
 
 .sidebar {
-  width: 230px;
+  width: 300px;
   min-width: 200px;
   height: 150vh;
   background: #1f1f23;
@@ -67,8 +67,6 @@ main {
 }
 
 .event-template {
-  background-color: #d6c5ea;
-  border: 2px solid #856dc0;
   height: 100%;
   width: 100%;
   border-radius: 5px;
@@ -199,4 +197,18 @@ main {
 
 .priority.relative {
   background: #ffb347;
+}
+
+.mini-calendar-container {
+  margin-top: 20px;
+  padding: 10px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.07);
+}
+
+.mini-calendar {
+  transform: scale(0.85);
+  transform-origin: top left;
+  width: 220px;
+  height: auto;
 }

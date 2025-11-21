@@ -1,9 +1,15 @@
 <div class="app-root">
   <aside class="sidebar">
+
+    <!-- Logo e seleção de sala -->
     <div class="classroom">
       <div class="logo">
         <img src="" alt="Logo">
         <h2>ConnectClass</h2>
+      </div>
+      <div class="mini-calendar-container">
+        <sx-calendar class="mini-calendar" [calendarApp]="miniCalendar">
+        </sx-calendar>
       </div>
       <label>Sala de Aula</label>
       <select>
@@ -13,73 +19,91 @@
         <option>2-BM SENAC</option>
         <option>3-AM SENAC</option>
         <option>3-BM SENAC</option>
-
       </select>
     </div>
+
+    <!-- Filtros conectados corretamente -->
     <div class="tasks-section">
-  <h4>Tarefas</h4>
+      <h4>Tarefas</h4>
 
-  <label class="task-filter">
-    <input type="checkbox" checked (change)="toggleFilter('other')">
-    <span class="task-indicator other"></span>
-    Outras tarefas
-  </label>
+      <label class="task-filter">
+        <input type="checkbox" [checked]="filters.other" (change)="toggleFilter('other')">
+        <span class="task-indicator other"></span>
+        Outras tarefas
+      </label>
 
-  <label class="task-filter">
-    <input type="checkbox" checked (change)="toggleFilter('basic')">
-    <span class="task-indicator basic"></span>
-    Básico
-  </label>
+      <label class="task-filter">
+        <input type="checkbox" [checked]="filters.basic" (change)="toggleFilter('basic')">
+        <span class="task-indicator basic"></span>
+        Básico
+      </label>
 
-  <label class="task-filter">
-    <input type="checkbox" checked (change)="toggleFilter('relative')">
-    <span class="task-indicator relative"></span>
-    Relativa
-  </label>
+      <label class="task-filter">
+        <input type="checkbox" [checked]="filters.relative" (change)="toggleFilter('relative')">
+        <span class="task-indicator relative"></span>
+        Relativa
+      </label>
 
-  <label class="task-filter">
-    <input type="checkbox" checked (change)="toggleFilter('important')">
-    <span class="task-indicator important"></span>
-    Importante
-  </label>
-</div>
+      <label class="task-filter">
+        <input type="checkbox" [checked]="filters.important" (change)="toggleFilter('important')">
+        <span class="task-indicator important"></span>
+        Importante
+      </label>
+    </div>
+
   </aside>
 
   <main>
+
+    <!-- Viewer resumido -->
     <section class="tasks-viewer">
-  <div class="tasks-header">
-    <button class="tab active">Hoje</button>
-    <button class="tab">Semana</button>
-  </div>
-
-  <div class="tasks-content">
-    <!-- Aqui você pode popular as tarefas dinamicamente depois -->
-    <div class="task-item">
-      <div class="task-info">
-        <strong>Portuguese Exam</strong>
-        <span>7:30 AM – 8:30 AM</span>
+      <div class="tasks-header">
+        <button class="tab active">Hoje</button>
+        <button class="tab">Semana</button>
       </div>
-      <span class="priority important"></span>
-    </div>
 
-    <div class="task-item">
-      <div class="task-info">
-        <strong>Group Work</strong>
-        <span>8:30 AM – 9:25 AM</span>
-      </div>
-      <span class="priority relative"></span>
-    </div>
-  </div>
-</section>
-    <section class="calendar-area">
-      <sx-calendar [calendarApp]="calendarApp" class="ng-calendar-wrapper">
-        <ng-template #timeGridEvent let-arg>
-          <div class="event-template">
-            <div>Time grid event: {{ arg.calendarEvent.title }}</div>
+      <div class="tasks-content">
+        <!-- Exemplo estático: pode ser substituído depois -->
+        <div class="task-item">
+          <div class="task-info">
+            <strong>Portuguese Exam</strong>
+            <span>7:30 AM – 8:30 AM</span>
           </div>
-        </ng-template>
-      </sx-calendar>
+          <span class="priority important"></span>
+        </div>
+
+        <div class="task-item">
+          <div class="task-info">
+            <strong>Group Work</strong>
+            <span>8:30 AM – 9:25 AM</span>
+          </div>
+          <span class="priority relative"></span>
+        </div>
+      </div>
     </section>
+
+    <!-- Calendário -->
+    <section class="calendar-area">
+
+      <sx-calendar class="ng-calendar-wrapper" [calendarApp]="calendarApp">
+
+        <ng-template #timeGridEvent let-arg>
+          <div class="event-template" [ngStyle]="{
+            'background-color': arg.calendarEvent.color,
+              'border-color': arg.calendarEvent.color,
+              'color': getEventTextColor(arg.calendarEvent.difficulty),'border': '2px solid ' + getEventTextColor(arg.calendarEvent.difficulty),
+                    'font-weight': 'bold'
+  }">
+            <div>{{ arg.calendarEvent.title }}</div>
+          </div>
+
+        </ng-template>
+
+
+      </sx-calendar>
+
+    </section>
+
   </main>
 </div>
 
