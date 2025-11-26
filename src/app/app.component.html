@@ -4,25 +4,31 @@
     <!-- Logo e seleção de sala -->
     <div class="classroom">
       <div class="logo">
-        <img src="" alt="Logo">
+        <div class="logo-dot"></div>
         <h2>ConnectClass</h2>
       </div>
+
       <div class="mini-calendar-container">
-        <sx-calendar class="mini-calendar" [calendarApp]="miniCalendar">
-        </sx-calendar>
+        <!-- componente do schedule-x (mini calendário) -->
+        <sx-calendar class="mini-calendar" [calendarApp]="miniCalendar"></sx-calendar>
       </div>
-      <label>Sala de Aula</label>
-      <select>
-        <option>1-AM SENAC</option>
-        <option>1-BM SENAC</option>
-        <option>2-AM SENAC</option>
-        <option>2-BM SENAC</option>
-        <option>3-AM SENAC</option>
-        <option>3-BM SENAC</option>
-      </select>
+
+      <label class="room-label">Sala de Aula</label>
+<select class="room-select"
+        aria-label="Selecionar turma"
+        [(ngModel)]="selectedRoom"
+        (change)="onRoomChange()">
+
+  <option *ngFor="let room of rooms" [value]="room.id">
+    {{ room.label }}
+  </option>
+
+</select>
+
+
     </div>
 
-    <!-- Filtros conectados corretamente -->
+    <!-- Filtros -->
     <div class="tasks-section">
       <h4>Tarefas</h4>
 
@@ -58,53 +64,90 @@
     <!-- Viewer resumido -->
     <section class="tasks-viewer">
       <div class="tasks-header">
-        <button class="tab active">Hoje</button>
-        <button class="tab">Semana</button>
+        <div class="tabs">
+          <button class="tab active">Hoje</button>
+          <button class="tab">Semana</button>
+        </div>
+
+        <button class="create-task-btn" (click)="openTaskModal()">
+          New Task
+        </button>
       </div>
 
       <div class="tasks-content">
-        <!-- Exemplo estático: pode ser substituído depois -->
-        <div class="task-item">
-          <div class="task-info">
-            <strong>Portuguese Exam</strong>
-            <span>7:30 AM – 8:30 AM</span>
-          </div>
-          <span class="priority important"></span>
-        </div>
+        <div *ngIf="tasks.length === 0" class="no-tasks">Nenhuma tarefa criada</div>
 
-        <div class="task-item">
+        <div class="task-item" *ngFor="let task of tasks" (click)="openTaskModal(task)">
           <div class="task-info">
-            <strong>Group Work</strong>
-            <span>8:30 AM – 9:25 AM</span>
+            <strong>{{ task.title }}</strong>
+            <span class="task-time">
+  {{ task.start | date:'dd/MM HH:mm' }} — {{ task.end | date:'dd/MM HH:mm' }}
+</span>
           </div>
-          <span class="priority relative"></span>
+          <span class="priority" [ngClass]="task.difficulty"></span>
         </div>
       </div>
     </section>
 
-    <!-- Calendário -->
+    <!-- Calendário principal -->
     <section class="calendar-area">
-
       <sx-calendar class="ng-calendar-wrapper" [calendarApp]="calendarApp">
-
         <ng-template #timeGridEvent let-arg>
-          <div class="event-template" [ngStyle]="{
-            'background-color': arg.calendarEvent.color,
-              'border-color': arg.calendarEvent.color,
-              'color': getEventTextColor(arg.calendarEvent.difficulty),'border': '2px solid ' + getEventTextColor(arg.calendarEvent.difficulty),
-                    'font-weight': 'bold'
-  }">
-            <div>{{ arg.calendarEvent.title }}</div>
+          <div class="event-template"
+               [ngStyle]="{
+                 'background-color': arg.calendarEvent.color,
+                 'border-color': arg.calendarEvent.color,
+                 'color': getEventTextColor(arg.calendarEvent.difficulty),
+                 'border': '2px solid ' + getEventTextColor(arg.calendarEvent.difficulty),
+                 'font-weight': '600'
+               }">
+            <div class="event-title">{{ arg.calendarEvent.title }}</div>
           </div>
-
         </ng-template>
-
-
       </sx-calendar>
-
     </section>
 
   </main>
+</div>
+
+<!-- Modal para criação/edição -->
+<div class="task-modal-backdrop" *ngIf="taskModalOpen" (click)="closeTaskModal()">
+  <div class="task-modal" (click)="$event.stopPropagation()">
+    <div class="task-modal-header">
+      <h3>{{ editingTask ? 'Editar Tarefa' : 'Nova Tarefa' }}</h3>
+      <button class="close-btn" (click)="closeTaskModal()">✕</button>
+    </div>
+
+    <div class="task-modal-body">
+      <input type="text" placeholder="Título" [(ngModel)]="taskForm.title" />
+
+      <textarea type="text" [(ngModel)]="taskForm.description"></textarea>
+
+
+      <div class="datetime-row">
+        <input type="datetime-local" [(ngModel)]="taskForm.start" />
+        <input type="datetime-local" [(ngModel)]="taskForm.end" />
+      </div>
+
+      <div class="select-row">
+        <label>
+          Prioridade
+          <select [(ngModel)]="taskForm.difficulty">
+            <option value="basic">Básico</option>
+            <option value="relative">Relativa</option>
+            <option value="important">Importante</option>
+            <option value="other">Outras</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <div class="task-modal-actions">
+      <button class="btn btn-cancel" (click)="closeTaskModal()">Cancelar</button>
+      <button *ngIf="editingTask" class="btn btn-delete" (click)="deleteTask(taskForm.id)">Excluir</button>
+      <button class="btn btn-save" (click)="saveTask()">Salvar</button>
+    </div>
+  </div>
 </div>
 
 <router-outlet></router-outlet>

@@ -5,3 +5,10 @@ html, body {
   background: #f4f4f6;
 }
 * { box-sizing: border-box; }
+:root {
+  --pastel-blue: #c4ddff;
+  --pastel-blue-border: #8bb4ff;
+
+  --text-dark: #2f2f2f;
+  --text-light: #7d7d7d;
+}
