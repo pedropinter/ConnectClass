@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { CalendarComponent } from "@schedule-x/angular";
 import { FormsModule } from '@angular/forms';
-import { createCalendar, viewWeek, createViewMonthGrid } from "@schedule-x/calendar";
-import '@schedule-x/theme-default/dist/calendar.css';
+import { createCalendar, viewWeek, createViewMonthGrid,createViewWeek,createViewList } from "@schedule-x/calendar";
 import { createEventModalPlugin } from "@schedule-x/event-modal";
 import { createDragAndDropPlugin } from "@schedule-x/drag-and-drop";
 import { SchoolEvent, DifficultyType } from './models/event.model';
@@ -30,11 +29,11 @@ export class AppComponent implements OnInit {
     end: '',
     difficulty: 'basic'
   };
-
+  
   tasks: SchoolEvent[] = [];
 
-  rooms: { id: number, label: string }[] = [];
-  selectedRoom: number | null = null;
+  rooms: { id: number, label: string, code: string }[] = []; 
+  selectedRoomCode: string | null = null;
 
   async ngOnInit() {
     await this.loadRoomsFromDb();
@@ -46,28 +45,28 @@ export class AppComponent implements OnInit {
 
     this.rooms = data.map((r: any) => ({
       id: r.id,
-      label: r.name
+      label: r.label,
+      code: r.code
     }));
 
     if (this.rooms.length > 0) {
-      this.selectedRoom = this.rooms[0].id;
-      await this.loadTasksFromDb(this.selectedRoom);
+      this.selectedRoomCode = this.rooms[0].code;
+      await this.loadTasksFromDb(this.selectedRoomCode);
     }
   }
 
-  async loadTasksFromDb(roomId: number) {
-    const res = await fetch(`http://localhost:3000/events/room/${roomId}`);
+  async loadTasksFromDb(roomCode: string) {
+    const res = await fetch(`http://localhost:3000/events/${roomCode}`);
     const events = await res.json();
 
     this.tasks = events.map((e: any) => ({
       id: e.id,
       title: e.title,
       description: e.description,
-      start: e.start.replace(" ", "T"),
-      end: e.end.replace(" ", "T"),
+      start: e.start,
+      end: e.end,
       difficulty: e.difficulty
     }));
-
     this.updateCalendar();
   }
 
@@ -80,6 +79,13 @@ export class AppComponent implements OnInit {
       } else if (typeof (this.calendarApp as any).setEvents === 'function') {
         (this.calendarApp as any).setEvents(events);
       }
+
+      if (this.miniCalendar?.events?.set) {
+        this.miniCalendar.events.set(events);
+      } else if (typeof (this.miniCalendar as any).setEvents === 'function') {
+        (this.miniCalendar as any).setEvents(events);
+      }
+      
     } catch (err) {
       console.error('Erro ao atualizar calendário:', err);
     }
@@ -91,13 +97,20 @@ export class AppComponent implements OnInit {
       return;
     }
 
+    const room = this.rooms.find(r => r.code === this.selectedRoomCode);
+
+    if (!room) {
+      alert("Sala não encontrada. Selecione uma sala válida.");
+      return;
+    }
+
     const payload = {
       title: this.taskForm.title,
       description: this.taskForm.description,
       start: this.taskForm.start,
       end: this.taskForm.end,
       difficulty: this.taskForm.difficulty,
-      roomId: this.selectedRoom
+      roomId: room.id 
     };
 
     if (!this.taskForm.id) {
@@ -114,25 +127,24 @@ export class AppComponent implements OnInit {
       });
     }
 
-    await this.loadTasksFromDb(this.selectedRoom!);
+    await this.loadTasksFromDb(this.selectedRoomCode!);
     this.closeTaskModal();
   }
 
   async deleteTask(id: number | null) {
     if (!id) return;
-
     if (!confirm("Deseja realmente excluir?")) return;
 
     await fetch(`http://localhost:3000/events/${id}`, {
       method: "DELETE"
     });
 
-    await this.loadTasksFromDb(this.selectedRoom!);
+    await this.loadTasksFromDb(this.selectedRoomCode!);
     this.closeTaskModal();
   }
 
   onRoomChange() {
-    this.loadTasksFromDb(this.selectedRoom!);
+    this.loadTasksFromDb(this.selectedRoomCode!);
     this.updateCalendar();
   }
 
@@ -173,12 +185,20 @@ export class AppComponent implements OnInit {
     return this.tasks
       .filter(event => this.filters[event.difficulty])
       .map(event => ({
-        ...event,
-        start: event.start.replace(' ', 'T'),
-        end: event.end.replace(' ', 'T'),
-        color: this.getColorByDifficulty(event.difficulty)
+        id: event.id!.toString(),
+        title: event.title,
+        description: event.description,
+        start: this.formatDateForCalendar(event.start),
+        end: this.formatDateForCalendar(event.end),
+        color: this.getColorByDifficulty(event.difficulty),
+        difficulty: event.difficulty 
       }));
   }
+
+ private formatDateForCalendar(dateTime: string): string {
+        if (!dateTime) return ''; 
+        return dateTime.replace(' ', 'T').substring(0, 16);
+    }
 
   toggleFilter(type: DifficultyType) {
     this.filters[type] = !this.filters[type];
@@ -203,7 +223,6 @@ export class AppComponent implements OnInit {
       default: return 'rgba(158, 158, 158, 0.45)';
     }
   }
-
   calendarApp = createCalendar({
     locale: 'pt-BR',
     firstDayOfWeek: 0,
@@ -220,7 +239,7 @@ export class AppComponent implements OnInit {
       eventOverlap: true
     },
     events: [],
-    views: [viewWeek],
+    views: [createViewWeek() ,createViewList()],
     plugins: [createEventModalPlugin(), createDragAndDropPlugin()],
   });
 

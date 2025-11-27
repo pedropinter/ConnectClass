@@ -10,7 +10,7 @@ import { Room } from "./Room";
 @Entity("school_events")
 export class SchoolEvent {
   @PrimaryGeneratedColumn()
-  id!: number; // agora numérico (Auto Increment)
+  id!: number;
 
   @Column()
   title!: string;

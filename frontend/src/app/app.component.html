@@ -1,25 +1,23 @@
 <div class="app-root">
   <aside class="sidebar">
 
-    <!-- Logo e seleção de sala -->
     <div class="classroom">
       <div class="logo">
-        <div class="logo-dot"></div>
-        <h2>ConnectClass</h2>
+        <!--<img src="../assets/logoCCcut.png" alt="ConnectClass Logo" class="logo-img">-->
+        <h1>Connect<span class="logo-accent">Class</span></h1>
       </div>
 
       <div class="mini-calendar-container">
-        <!-- componente do schedule-x (mini calendário) -->
         <sx-calendar class="mini-calendar" [calendarApp]="miniCalendar"></sx-calendar>
       </div>
 
       <label class="room-label">Sala de Aula</label>
 <select class="room-select"
-        aria-label="Selecionar turma"
-        [(ngModel)]="selectedRoom"
-        (change)="onRoomChange()">
+  aria-label="Selecionar turma"
+  [(ngModel)]="selectedRoomCode"  
+  (change)="onRoomChange()">
 
-  <option *ngFor="let room of rooms" [value]="room.id">
+  <option *ngFor="let room of rooms" [value]="room.code"> 
     {{ room.label }}
   </option>
 
@@ -28,7 +26,6 @@
 
     </div>
 
-    <!-- Filtros -->
     <div class="tasks-section">
       <h4>Tarefas</h4>
 
@@ -61,7 +58,6 @@
 
   <main>
 
-    <!-- Viewer resumido -->
     <section class="tasks-viewer">
       <div class="tasks-header">
         <div class="tabs">
@@ -70,7 +66,7 @@
         </div>
 
         <button class="create-task-btn" (click)="openTaskModal()">
-          New Task
+          Nova Tarefa
         </button>
       </div>
 
@@ -89,7 +85,6 @@
       </div>
     </section>
 
-    <!-- Calendário principal -->
     <section class="calendar-area">
       <sx-calendar class="ng-calendar-wrapper" [calendarApp]="calendarApp">
         <ng-template #timeGridEvent let-arg>
@@ -110,7 +105,6 @@
   </main>
 </div>
 
-<!-- Modal para criação/edição -->
 <div class="task-modal-backdrop" *ngIf="taskModalOpen" (click)="closeTaskModal()">
   <div class="task-modal" (click)="$event.stopPropagation()">
     <div class="task-modal-header">

@@ -7,10 +7,10 @@ export class Room {
   id!: number;
 
   @Column({ unique: true })
-  code!: string; // ex: "room-1"
+  code!: string; 
 
   @Column()
-  label!: string; // ex: "1-AM SENAC"
+  label!: string; 
 
   @OneToMany(() => SchoolEvent, (event) => event.room)
   events!: SchoolEvent[];

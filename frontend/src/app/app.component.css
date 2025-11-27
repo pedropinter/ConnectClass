@@ -5,16 +5,15 @@
   -webkit-font-smoothing: antialiased;
 }
 
-/* layout */
 .app-root {
   display: flex;
   height: 100%;
   background: #f4f4f6;
 }
 
-/* SIDEBAR */
 .sidebar {
   width: 300px;
+  height: 140vh;
   min-width: 240px;
   background: #1f1f23;
   color: #fff;
@@ -32,21 +31,20 @@
   margin-bottom: 8px;
 }
 
-.logo-dot {
-  width: 20px;
-  height: 20px;
-  background: #6b5bd6;
-  border-radius: 50%;
-  box-shadow: 0 2px 6px rgba(107,91,214,0.25);
+.logo-img {
+  width: 32px;
+  height: 32px;
 }
 
-.logo h2 {
+.logo h1 {
   margin: 0;
   font-size: 20px;
   font-weight: 700;
+  color: #6b5bd6;
 }
-
-/* mini calendar container */
+.logo-accent{
+  color: #5b8dee;
+}
 .mini-calendar-container {
   margin-top: 8px;
   padding: 10px;
@@ -63,7 +61,6 @@
   display: block;
 }
 
-/* room select */
 .room-label {
   display: block;
   margin-top: 12px;
@@ -81,7 +78,6 @@
   color: #111;
 }
 
-/* filters */
 .tasks-section {
   margin-top: 12px;
 }
@@ -117,7 +113,6 @@
 .task-indicator.relative { background: #ffb347; }
 .task-indicator.important { background: #e74c3c; }
 
-/* MAIN */
 main {
   flex: 1;
   padding: 18px 28px;
@@ -125,7 +120,6 @@ main {
   flex-direction: column;
 }
 
-/* tasks viewer */
 .tasks-viewer {
   width: 100%;
   background: #ffffff;
@@ -168,7 +162,6 @@ main {
   cursor: pointer;
 }
 
-/* list of tasks in viewer */
 .tasks-content {
   max-height: 120px;
   overflow-y: auto;
@@ -194,7 +187,6 @@ main {
 .priority.relative { background:#ffb347; }
 .priority.important { background:#e74c3c; }
 
-/* calendar area */
 .calendar-area {
   flex: 1;
   margin-top: 6px;
@@ -208,7 +200,6 @@ main {
   box-shadow: 0 6px 18px rgba(0,0,0,0.06);
 }
 
-/* event template styling */
 .event-template {
   height: 100%;
   width: 100%;
@@ -220,7 +211,6 @@ main {
   align-items:center;
 }
 
-/* modal backdrop and modal */
 .task-modal-backdrop {
   position: fixed;
   inset: 0;
@@ -258,7 +248,6 @@ main {
   cursor: pointer;
 }
 
-/* body */
 .task-modal-body {
   padding: 14px 16px;
   display: flex;
@@ -278,7 +267,6 @@ main {
   box-sizing: border-box;
 }
 
-/* smaller row layout */
 .datetime-row {
   display:flex;
   gap:8px;
@@ -306,7 +294,6 @@ main {
 .btn-cancel { background: #f1f1f1; color: #333; }
 .btn-delete { background: #d9534f; color: #fff; }
 
-/* schedule-x specific tiny tweaks (scoped) */
 :host ::ng-deep .sx-time-grid__axis {
   color: #9aa0a6;
   font-weight: 600;

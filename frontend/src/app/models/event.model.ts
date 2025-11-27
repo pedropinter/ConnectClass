@@ -1,7 +1,7 @@
 export type DifficultyType = 'other' | 'basic' | 'relative' | 'important';
 
 export interface SchoolEvent {
-  id: number | null;      // ← corrigido aqui
+  id: number | null;     
   title: string;
   description: string;
   start: string;

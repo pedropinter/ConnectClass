@@ -1,4 +1,4 @@
-/* You can add global styles to this file, and also import other style files */
+@import '@schedule-x/theme-default/dist/calendar.css';
 html, body {
   height: 100%;
   margin: 0;
