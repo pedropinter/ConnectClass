@@ -9,7 +9,7 @@ import { createDragAndDropPlugin } from "@schedule-x/drag-and-drop";
 import { SchoolEvent, DifficultyType } from './models/event.model';
 
 type FilterType = DifficultyType;
-
+type TimeFilter = 'today' | 'week' | 'all'; 
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -27,7 +27,8 @@ export class AppComponent implements OnInit {
     description: '',
     start: '',
     end: '',
-    difficulty: 'basic'
+    difficulty: 'basic',
+    location: '001',
   };
   
   tasks: SchoolEvent[] = [];
@@ -65,7 +66,8 @@ export class AppComponent implements OnInit {
       description: e.description,
       start: e.start,
       end: e.end,
-      difficulty: e.difficulty
+      difficulty: e.difficulty,
+      location: e.location,
     }));
     this.updateCalendar();
   }
@@ -110,6 +112,7 @@ export class AppComponent implements OnInit {
       start: this.taskForm.start,
       end: this.taskForm.end,
       difficulty: this.taskForm.difficulty,
+      location: this.taskForm.location,
       roomId: room.id 
     };
 
@@ -159,7 +162,8 @@ export class AppComponent implements OnInit {
         description: '',
         start: '',
         end: '',
-        difficulty: 'basic'
+        difficulty: 'basic',
+        location: '001',
       };
       this.editingTask = false;
     }
@@ -194,10 +198,57 @@ export class AppComponent implements OnInit {
         difficulty: event.difficulty 
       }));
   }
+  activeTimeFilter: TimeFilter = 'today';
+  setTimeFilter(filter: TimeFilter) {
+    this.activeTimeFilter = filter;
+  }
+  private isToday(dateString: string): boolean {
+    const today = new Date();
+    const taskDate = new Date(dateString);
+    return today.toDateString() === taskDate.toDateString();
+  }
+  private isThisWeek(dateString: string): boolean {
+    const today = new Date();
+    const taskDate = new Date(dateString);
+    
+    const endOfWeek = new Date();
+    endOfWeek.setDate(today.getDate() + 7);
+
+    return taskDate >= today && taskDate <= endOfWeek;
+  }
+  searchTerm: string = '';
+  get filteredTaskList(): SchoolEvent[] {
+    const term = this.searchTerm.toLowerCase().trim();
+
+    return this.tasks.filter(task => {
+      const matchesSearch = task.title.toLowerCase().includes(term);
+      
+      const matchesFilter = this.filters[task.difficulty];
+
+      let matchesTime: boolean = true;
+
+      if (this.activeTimeFilter === 'today') {
+        matchesTime = this.isToday(task.end);
+      } else if (this.activeTimeFilter === 'week') {
+        matchesTime = this.isThisWeek(task.end);
+      }
+
+      return matchesSearch && matchesFilter && matchesTime;
+    });
+  }
 
  private formatDateForCalendar(dateTime: string): string {
-        if (!dateTime) return ''; 
-        return dateTime.replace(' ', 'T').substring(0, 16);
+       const d = new Date(dateTime);
+
+       const year = d.getFullYear();
+       const month = String(d.getMonth()+1).padStart(2,'0');
+       const day = String(d.getDate()).padStart(2,'0');
+
+       const hours = String(d.getHours()).padStart(2,'0');
+       const minutes = String(d.getMinutes()).padStart(2,'0');
+
+       return `${year}-${month}-${day} ${hours}:${minutes}`
+
     }
 
   toggleFilter(type: DifficultyType) {
@@ -229,7 +280,7 @@ export class AppComponent implements OnInit {
     isDark: false,
     dayBoundaries: {
       start: '06:00',
-      end: '13:00'
+      end: '19:00'
     },
     weekOptions: {
       gridHeight: 500,
@@ -239,7 +290,7 @@ export class AppComponent implements OnInit {
       eventOverlap: true
     },
     events: [],
-    views: [createViewWeek() ,createViewList()],
+    views: [createViewWeek() ,createViewList(),createViewMonthGrid()],
     plugins: [createEventModalPlugin(), createDragAndDropPlugin()],
   });
 

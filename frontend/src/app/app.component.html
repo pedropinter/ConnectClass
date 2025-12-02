@@ -3,7 +3,7 @@
 
     <div class="classroom">
       <div class="logo">
-        <!--<img src="../assets/logoCCcut.png" alt="ConnectClass Logo" class="logo-img">-->
+        <img src="logoCCcerta.svg" alt="ConnectClass Logo" class="logo-img">
         <h1>Connect<span class="logo-accent">Class</span></h1>
       </div>
 
@@ -12,16 +12,14 @@
       </div>
 
       <label class="room-label">Sala de Aula</label>
-<select class="room-select"
-  aria-label="Selecionar turma"
-  [(ngModel)]="selectedRoomCode"  
-  (change)="onRoomChange()">
+      <select class="room-select" aria-label="Selecionar turma" [(ngModel)]="selectedRoomCode"
+        (change)="onRoomChange()">
 
-  <option *ngFor="let room of rooms" [value]="room.code"> 
-    {{ room.label }}
-  </option>
+        <option *ngFor="let room of rooms" [value]="room.code">
+          {{ room.label }}
+        </option>
 
-</select>
+      </select>
 
 
     </div>
@@ -29,11 +27,6 @@
     <div class="tasks-section">
       <h4>Tarefas</h4>
 
-      <label class="task-filter">
-        <input type="checkbox" [checked]="filters.other" (change)="toggleFilter('other')">
-        <span class="task-indicator other"></span>
-        Outras tarefas
-      </label>
 
       <label class="task-filter">
         <input type="checkbox" [checked]="filters.basic" (change)="toggleFilter('basic')">
@@ -61,24 +54,36 @@
     <section class="tasks-viewer">
       <div class="tasks-header">
         <div class="tabs">
-          <button class="tab active">Hoje</button>
-          <button class="tab">Semana</button>
+          <button class="tab" [class.active]="activeTimeFilter === 'today'" (click)="setTimeFilter('today')">
+            Hoje
+          </button>
+
+          <button class="tab" [class.active]="activeTimeFilter === 'week'" (click)="setTimeFilter('week')">
+            Semana
+          </button>
+
+          <button class="tab" [class.active]="activeTimeFilter === 'all'" (click)="setTimeFilter('all')">
+            Todas
+          </button>
         </div>
 
         <button class="create-task-btn" (click)="openTaskModal()">
           Nova Tarefa
         </button>
+        <input type="text" class="search-tab-input" placeholder="Pesquisar..." [(ngModel)]="searchTerm">
       </div>
 
       <div class="tasks-content">
-        <div *ngIf="tasks.length === 0" class="no-tasks">Nenhuma tarefa criada</div>
+        <div *ngIf="filteredTaskList.length === 0" class="no-tasks">
+          {{ searchTerm ? 'Nenhuma tarefa encontrada.' : 'Nenhuma tarefa criada' }}
+        </div>
 
-        <div class="task-item" *ngFor="let task of tasks" (click)="openTaskModal(task)">
+        <div class="task-item" *ngFor="let task of filteredTaskList" (click)="openTaskModal(task)">
           <div class="task-info">
             <strong>{{ task.title }}</strong>
             <span class="task-time">
-  {{ task.start | date:'dd/MM HH:mm' }} — {{ task.end | date:'dd/MM HH:mm' }}
-</span>
+              {{ task.start | date:'dd/MM HH:mm' }} — {{ task.end | date:'dd/MM HH:mm' }}
+            </span>
           </div>
           <span class="priority" [ngClass]="task.difficulty"></span>
         </div>
@@ -88,8 +93,7 @@
     <section class="calendar-area">
       <sx-calendar class="ng-calendar-wrapper" [calendarApp]="calendarApp">
         <ng-template #timeGridEvent let-arg>
-          <div class="event-template"
-               [ngStyle]="{
+          <div class="event-template" [ngStyle]="{
                  'background-color': arg.calendarEvent.color,
                  'border-color': arg.calendarEvent.color,
                  'color': getEventTextColor(arg.calendarEvent.difficulty),
@@ -127,10 +131,20 @@
         <label>
           Prioridade
           <select [(ngModel)]="taskForm.difficulty">
-            <option value="basic">Básico</option>
-            <option value="relative">Relativa</option>
-            <option value="important">Importante</option>
-            <option value="other">Outras</option>
+            <option value="basic">Básicas</option>
+            <option value="relative">Relativas</option>
+            <option value="important">Importantes</option>
+          </select>
+        </label>
+        <label>
+          Local
+          <select [(ngModel)]="taskForm.location">
+            <option value="001">001</option>
+            <option value="002">002</option>
+            <option value="101">101</option>
+            <option value="102">102</option>
+            <option value="103">103</option>
+            <option value="104">104</option>
           </select>
         </label>
       </div>

@@ -32,8 +32,8 @@
 }
 
 .logo-img {
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
 }
 
 .logo h1 {
@@ -47,7 +47,7 @@
 }
 .mini-calendar-container {
   margin-top: 8px;
-  padding: 10px;
+  padding: 5px;
   border-radius: 12px;
   background: rgba(255,255,255,0.02);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
@@ -56,8 +56,8 @@
 .mini-calendar {
   transform: scale(0.86);
   transform-origin: top left;
-  width: 230px;
-  height: auto;
+  width: 295px;
+  height: 295px;
   display: block;
 }
 
@@ -303,3 +303,28 @@ main {
   font-weight: 700;
 }
 
+.tab.active { background: #6b5bd6; color: #fff; }
+.tabs { display:flex; gap:8px; align-items:center; }
+.search-tab-input {
+  background: #eaeaf0; 
+  border: none;
+  padding: 6px 12px;
+  border-radius: 20px; 
+  font-size: 13px;
+  color: #333;
+  width: 120px; 
+  outline: none;
+  transition: all 0.2s ease-in-out;
+  font-family: inherit; 
+}
+
+.search-tab-input:focus,
+.search-tab-input:hover {
+  background: #fff;
+  box-shadow: 0 0 0 1px #d1d1d6; 
+  width: 160px;
+}
+
+.search-tab-input::placeholder {
+  color: #8e8e93;
+}

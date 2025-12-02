@@ -7,6 +7,9 @@ import {
 } from "typeorm";
 import { Room } from "./Room";
 
+export type LocationType = "001" | "002" | "101" | "102" | "103" | "104";
+export type DifficultyType = "other" | "basic" | "relative" | "important";
+
 @Entity("school_events")
 export class SchoolEvent {
   @PrimaryGeneratedColumn()
@@ -23,13 +26,18 @@ export class SchoolEvent {
 
   @Column({ name: "end_time", type: "datetime" })
   end!: Date;
-
+  @Column({
+    type: "enum",
+    enum: ["001", "002", "101", "102", "103", "104"],
+    default: "001", // Define um valor padrão
+  })
+  location!: LocationType;
   @Column({
     type: "enum",
     enum: ["other", "basic", "relative", "important"],
     default: "basic",
   })
-  difficulty!: "other" | "basic" | "relative" | "important";
+  difficulty!: DifficultyType;
 
   @ManyToOne(() => Room, (room) => room.events, { onDelete: "CASCADE" })
   @JoinColumn({ name: "room_id" })

@@ -6,6 +6,8 @@ html, body {
 }
 * { box-sizing: border-box; }
 :root {
+  --sx-color-primary-container: #6b5bd6 !important;
+
   --pastel-blue: #c4ddff;
   --pastel-blue-border: #8bb4ff;
 
