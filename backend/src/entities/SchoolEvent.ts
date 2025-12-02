@@ -29,7 +29,7 @@ export class SchoolEvent {
   @Column({
     type: "enum",
     enum: ["001", "002", "101", "102", "103", "104"],
-    default: "001", // Define um valor padrão
+    default: "001", 
   })
   location!: LocationType;
   @Column({
